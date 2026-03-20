@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RCS Chile — Situación Financiera Crítica</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #eef0f3;
+  --s1: #ffffff;
+  --s2: #f5f6f8;
+  --s3: #edeef1;
+  --border: #d4d8de;
+  --border2: #c2c7cf;
+  --text: #1a1d23;
+  --muted: #6b7280;
+  --muted2: #374151;
+  --red: #b91c1c;
+  --red-bg: rgba(185,28,28,0.06);
+  --red-border: rgba(185,28,28,0.18);
+  --green: #15803d;
+  --green-bg: rgba(21,128,61,0.06);
+  --green-border: rgba(21,128,61,0.18);
+  --yellow: #92400e;
+  --yellow-bg: rgba(146,64,14,0.06);
+  --yellow-border: rgba(146,64,14,0.18);
+  --blue: #1e40af;
+  --blue-bg: rgba(30,64,175,0.06);
+  --blue-border: rgba(30,64,175,0.16);
+  --accent: #1e3a5f;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
+
+/* HEADER */
+.header{background:var(--accent);border-bottom:3px solid var(--red);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:'Syne',sans-serif;}
+.logo-main{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:#ffffff;}
+.logo-main em{color:#fca5a5;font-style:normal;}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.crisis-badge{background:rgba(220,38,38,0.25);border:1px solid rgba(252,165,165,0.4);color:#fca5a5;padding:5px 14px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
+.date-chip{font-size:10px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:4px 10px;border-radius:4px;}
+
+/* TABS */
+.tabs{background:var(--s1);border-bottom:2px solid var(--border);padding:0 32px;display:flex;gap:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 6px rgba(0,0,0,0.06);}
+.tab{padding:12px 18px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;}
+.tab:hover{color:var(--accent);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAIN */
+.main{padding:24px 32px;display:flex;flex-direction:column;gap:16px;}
+.page{display:none;flex-direction:column;gap:16px;}
+.page.active{display:flex;}
+
+/* ALERTA SUPERIOR */
+.alerta-top{background:var(--red-bg);border:1px solid var(--red-border);border-left:4px solid var(--red);border-radius:6px;padding:13px 18px;display:flex;align-items:center;gap:14px;}
+.alerta-icon{font-size:14px;flex-shrink:0;font-weight:700;color:var(--red);}
+.alerta-text{font-size:12px;line-height:1.6;color:var(--muted2);}
+.alerta-text strong{color:var(--red);font-weight:600;}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.grid-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:18px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.card-red{border-left:3px solid var(--red);}
+.card-yellow{border-left:3px solid var(--yellow);}
+.card-green{border-left:3px solid var(--green);}
+.card-title{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px;}
+.card-badge{font-size:10px;color:var(--muted);font-family:'Inter',sans-serif;font-weight:400;text-transform:none;letter-spacing:0;}
+
+/* KPI */
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.kpi-top{position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
+.kpi-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:5px;}
+.kpi-sub{font-size:10px;color:var(--muted);}
+.kpi-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:3px;font-size:9px;font-weight:700;margin-top:6px;}
+.badge-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+.badge-yellow{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border);}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);}
+
+/* SEMAFORO */
+.sem{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.sem-red{background:var(--red);}
+.sem-yellow{background:#d97706;}
+.sem-green{background:var(--green);}
+
+/* TABLA */
+.table{width:100%;border-collapse:collapse;font-size:12px;}
+.table th{padding:7px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);border-bottom:2px solid var(--border);text-align:right;background:var(--s2);}
+.table th:first-child{text-align:left;}
+.table td{padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle;color:var(--text);}
+.table td:first-child{text-align:left;color:var(--text);}
+.table tr:hover td{background:rgba(30,58,95,0.03);}
+.table tr.section td{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding-top:12px;border-bottom:none;background:var(--s2);font-weight:700;}
+.table tr.subtotal td{font-weight:600;font-family:'Syne',sans-serif;border-top:1px solid var(--border2);background:var(--s2);}
+.table tr.total td{font-size:13px;font-weight:700;font-family:'Syne',sans-serif;border-top:2px solid var(--accent);background:var(--s2);padding:10px;}
+.val-r{color:var(--red);font-weight:600;}
+.val-g{color:var(--green);font-weight:600;}
+.val-y{color:var(--yellow);font-weight:600;}
+.val-m{color:var(--muted);}
+.val-w{color:var(--text);}
+
+/* WATERFALL / BRIDGE */
+.bridge{display:flex;align-items:flex-end;gap:8px;height:180px;padding:0 12px 0 0;}
+.bridge-col{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;}
+.bridge-bar{width:80%;border-radius:3px 3px 0 0;position:relative;transition:.3s;}
+.bridge-spacer{width:80%;}
+.bridge-label{font-size:9px;color:var(--muted);margin-top:6px;text-align:center;line-height:1.3;}
+.bridge-val{font-size:9px;font-weight:700;text-align:center;margin-bottom:3px;}
+
+/* DEUDA ITEMS */
+.deuda-item{padding:10px 0;border-bottom:1px solid var(--border);}
+.deuda-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.deuda-name{font-size:11px;font-weight:600;color:var(--text);}
+.deuda-tipo{font-size:9px;padding:2px 7px;border-radius:3px;font-weight:600;}
+.tipo-extra{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border);}
+.tipo-conta{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);}
+.deuda-bar-bg{height:5px;background:var(--s3);border-radius:2px;overflow:hidden;margin-top:4px;border:1px solid var(--border);}
+.deuda-bar-fill{height:100%;border-radius:2px;}
+.deuda-monto{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.deuda-sub{font-size:9px;color:var(--muted);margin-top:1px;}
+
+/* RISK METER */
+.risk-meter{display:flex;flex-direction:column;gap:10px;}
+.risk-item{display:flex;align-items:center;gap:12px;}
+.risk-label{font-size:11px;color:var(--text);width:190px;flex-shrink:0;}
+.risk-bar-bg{flex:1;height:7px;background:var(--s3);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.risk-bar-fill{height:100%;border-radius:3px;}
+.risk-level{font-size:10px;font-weight:700;width:55px;text-align:right;}
+
+/* CONCLUSION */
+.conclusion{background:var(--s1);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:6px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.conclusion-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.conclusion-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.conclusion-item{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:14px;}
+.conclusion-item.critical{border-left:3px solid var(--red);}
+.conclusion-item.warning{border-left:3px solid var(--yellow);}
+.conclusion-item-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.conclusion-item-title.red{color:var(--red);}
+.conclusion-item-title.yellow{color:var(--yellow);}
+.conclusion-item-title.blue{color:var(--blue);}
+.conclusion-item-text{font-size:11px;color:var(--muted2);line-height:1.6;}
+.conclusion-item-text strong{color:var(--text);font-weight:600;}
+
+/* DECISION BOX */
+.decision-box{border-radius:6px;padding:18px;border:1px solid var(--border);background:var(--s1);box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.decision-box.cerrar{border-top:3px solid var(--red);}
+.decision-box.traspasar{border-top:3px solid var(--yellow);}
+.decision-box.continuar{border-top:3px solid var(--green);}
+.decision-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:10px;}
+.decision-pros{margin-top:8px;}
+.decision-item{font-size:11px;color:var(--muted2);padding:4px 0;padding-left:12px;position:relative;line-height:1.5;}
+.decision-item::before{content:'›';position:absolute;left:0;color:var(--muted);}
+
+/* EERR BARS */
+.eerr-bar-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
+.eerr-label{font-size:11px;width:220px;flex-shrink:0;color:var(--text);}
+.eerr-bar-wrap{flex:1;position:relative;}
+.eerr-bar-bg{height:20px;background:var(--s3);border-radius:3px;overflow:hidden;position:relative;border:1px solid var(--border);}
+.eerr-bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding:0 8px;}
+.eerr-bar-label{font-size:9px;font-weight:600;white-space:nowrap;}
+.eerr-val{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;width:90px;text-align:right;}
+.eerr-pct{font-size:9px;color:var(--muted);width:50px;text-align:right;}
+
+/* EVOLUCION */
+.evol-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);}
+.evol-year{font-size:11px;font-weight:600;width:60px;color:var(--muted);}
+.evol-bar-bg{flex:1;height:14px;background:var(--s3);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.evol-bar-fill{height:100%;border-radius:3px;}
+.evol-val{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;width:80px;text-align:right;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+.footer{padding:14px 32px;border-top:2px solid var(--border);background:var(--accent);text-align:center;font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:.3px;}
+
+@media(max-width:900px){
+  .grid-2,.grid-3,.grid-kpi{grid-template-columns:1fr;}
+  .main,.header,.tabs{padding-left:16px;padding-right:16px;}
+  .conclusion-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-main">RCS CHILE — <em>SITUACIÓN FINANCIERA CRÍTICA</em></div>
+    <div class="logo-sub">Memoria de Cálculo CXC-CXP · Retail Custom Solutions Chile SpA · RUT 76.495.295-2</div>
+  </div>
+  <div class="header-right">
+    <div class="crisis-badge">Caso Crítico</div>
+    <div class="date-chip">Al 27/05/2025</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="setTab('resumen')">Resumen Ejecutivo</div>
+  <div class="tab" onclick="setTab('cxc')">Cuentas por Cobrar</div>
+  <div class="tab" onclick="setTab('cxp')">Cuentas por Pagar</div>
+  <div class="tab" onclick="setTab('reconciliacion')">Contable vs Real</div>
+  <div class="tab" onclick="setTab('resultados')">Resultados</div>
+  <div class="tab" onclick="setTab('riesgo')">Análisis de Riesgo</div>
+  <div class="tab" onclick="setTab('decision')">Decisión Estratégica</div>
+</div>
+
+<div class="main">
+
+<!-- ════════ RESUMEN EJECUTIVO ════════ -->
+<div class="page active" id="page-resumen">
+  <div class="alerta-top">
+    <div class="alerta-icon">▲</div>
+    <div class="alerta-text">
+      <strong>Situación financiera crítica al 31/12/2025.</strong> RCS Chile acumula pasivos reales (contables + extracontables) por <strong>USD 371.759</strong> (~$359,5MM CLP), con un resultado proyectado negativo de <strong>USD 337.230</strong> (~$326,2MM CLP). La empresa es estructuralmente deficitaria. La administración evalúa cierre o traspaso a socios peruanos.
+    </div>
+  </div>
+
+  <div class="grid-kpi">
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Deuda Total Real (al 31-12-2025)</div>
+      <div class="kpi-val val-r">USD 371.759</div>
+      <div class="kpi-sub">~ $359,5 MM CLP</div>
+      <div class="kpi-badge badge-red">Contable + Extracontable</div>
+    </div>
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Resultado Proyectado 2025</div>
+      <div class="kpi-val val-r">– USD 337.230</div>
+      <div class="kpi-sub">– $326,2 MM CLP</div>
+      <div class="kpi-badge badge-red">Pérdida acumulada</div>
+    </div>
+    <div class="kpi card-yellow">
+      <div class="kpi-top" style="background:var(--yellow)"></div>
+      <div class="kpi-label">Disponible Actual (15-04-2025)</div>
+      <div class="kpi-val val-y">USD 86.163</div>
+      <div class="kpi-sub">$83,3 MM CLP (FFMM + Caja)</div>
+      <div class="kpi-badge badge-yellow">Fondos comprometidos</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top" style="background:var(--blue)"></div>
+      <div class="kpi-label">Pérdida 2024 (EERR)</div>
+      <div class="kpi-val val-r">– USD 532</div>
+      <div class="kpi-sub">– $514.568 CLP</div>
+      <div class="kpi-badge badge-red">Pérdida operacional</div>
+    </div>
+  </div>
+
+  <!-- Resumen Contable vs Real -->
+  <div class="grid-2">
+    <div class="card card-red">
+      <div class="card-title">Posición Financiera Real (Consolidada al 31-12-2025)</div>
+      <table class="table">
+        <thead><tr><th>Concepto</th><th>USD</th><th>CLP</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr class="section"><td colspan="4">ACTIVOS</td></tr>
+          <tr><td style="padding-left:14px">Fondos Mutuos</td><td class="val-g">72.721</td><td class="val-m">$70,3MM</td><td><span class="sem sem-green"></span></td></tr>
+          <tr><td style="padding-left:14px">Saldo Caja</td><td class="val-g">13.442</td><td class="val-m">$13,0MM</td><td><span class="sem sem-green"></span></td></tr>
+          <tr><td style="padding-left:14px">CXC Clientes (30 días)</td><td class="val-y">22.111</td><td class="val-m">$21,4MM</td><td><span class="sem sem-yellow"></span></td></tr>
+          <tr class="subtotal"><td>Total Activo Disponible</td><td class="val-g">108.273</td><td class="val-m">$104,7MM</td><td></td></tr>
+          <tr class="section"><td colspan="4">PASIVOS CORTO PLAZO (2025)</td></tr>
+          <tr><td style="padding-left:14px">Remuneraciones + Gtos Oper.</td><td class="val-r">9.926</td><td class="val-m">$9,6MM</td><td><span class="sem sem-red"></span></td></tr>
+          <tr><td style="padding-left:14px">Impuestos (F29)</td><td class="val-r">2.585</td><td class="val-m">$2,5MM</td><td><span class="sem sem-red"></span></td></tr>
+          <tr><td style="padding-left:14px">Indemnizaciones y Vacaciones</td><td class="val-r">37.614</td><td class="val-m">$36,4MM</td><td><span class="sem sem-red"></span></td></tr>
+          <tr class="subtotal"><td>Total Pasivo Corto Plazo 2025</td><td class="val-r">50.642</td><td class="val-m">$49,0MM</td><td></td></tr>
+          <tr class="section"><td colspan="4">PASIVOS LARGO PLAZO (Extracontables)</td></tr>
+          <tr><td style="padding-left:14px">Deuda a RCS Perú</td><td class="val-r">76.418</td><td class="val-m">$73,9MM</td><td><span class="deuda-tipo tipo-extra">EXTRACONTABLE</span></td></tr>
+          <tr><td style="padding-left:14px">Deuda a Faros</td><td class="val-r">244.698</td><td class="val-m">$236,7MM</td><td><span class="deuda-tipo tipo-extra">EXTRACONTABLE</span></td></tr>
+          <tr class="subtotal"><td>Total Pasivo Largo Plazo</td><td class="val-r">321.117</td><td class="val-m">$310,6MM</td><td></td></tr>
+          <tr class="total"><td>DÉFICIT NETO REAL</td><td class="val-r">– 337.230</td><td class="val-r">– $326,2MM</td><td><span class="sem sem-red"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <div class="card-title">Distribución de la Deuda Total</div>
+        <div style="margin-bottom:12px">
+          <div class="deuda-item">
+            <div class="deuda-header">
+              <div class="deuda-name">Deuda a Faros Asesores</div>
+              <div style="text-align:right">
+                <div class="deuda-monto val-r">USD 244.698</div>
+                <div class="deuda-sub">76,2% del total · $236,7MM CLP</div>
+              </div>
+            </div>
+            <div class="deuda-bar-bg"><div class="deuda-bar-fill" style="width:76.2%;background:var(--red)"></div></div>
+            <div style="font-size:9px;color:var(--yellow);margin-top:4px">EXTRACONTABLE — No registrada en balance</div>
+          </div>
+          <div class="deuda-item">
+            <div class="deuda-header">
+              <div class="deuda-name">Deuda a RCS Perú</div>
+              <div style="text-align:right">
+                <div class="deuda-monto val-r">USD 76.418</div>
+                <div class="deuda-sub">23,8% del total · $73,9MM CLP</div>
+              </div>
+            </div>
+            <div class="deuda-bar-bg"><div class="deuda-bar-fill" style="width:23.8%;background:var(--red)"></div></div>
+            <div style="font-size:9px;color:var(--yellow);margin-top:4px">EXTRACONTABLE — No registrada en balance</div>
+          </div>
+        </div>
+        <div style="padding:10px;background:var(--s2);border-radius:6px;border:1px solid var(--yellow-border)">
+          <div style="font-size:9px;color:var(--yellow);font-weight:700;margin-bottom:4px">DISTRIBUCIÓN POR SOCIO</div>
+          <div style="font-size:11px;color:var(--muted2)">Retail Custom Solutions S.A.C: <strong style="color:var(--red)">USD 202.338</strong> (60%)</div>
+          <div style="font-size:11px;color:var(--muted2)">Inversiones y Consultoría Aplicateck SPA: <strong style="color:var(--red)">USD 134.892</strong> (40%)</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Estado de Caja Después de Pagos 2024</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:11px;color:var(--muted2)">Disponible actual</span>
+            <span class="val-g" style="font-weight:600;font-family:'Syne',sans-serif">USD 86.163</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:11px;color:var(--muted2)">Pago 2024 a RCS Perú (pagado 15-05-2025)</span>
+            <span class="val-r" style="font-weight:600">– USD 13.730</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:11px;color:var(--muted2)">Pago 2024 a Faros (pagado 15-05-2025)</span>
+            <span class="val-r" style="font-weight:600">– USD 23.078</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:2px solid var(--yellow-border);">
+            <span style="font-size:12px;font-weight:600">Saldo disponible post pago</span>
+            <span class="val-y" style="font-weight:700;font-family:'Syne',sans-serif;font-size:14px">USD 49.354</span>
+          </div>
+          <div style="padding:8px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:6px;font-size:10px;color:var(--muted2);">
+            El disponible <strong style="color:var(--yellow)">no proviene de generación operativa real</strong>, sino de deudas pendientes de pago. Si se honraran todas las obligaciones, el patrimonio sería profundamente negativo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ CXC ════════ -->
+<div class="page" id="page-cxc">
+  <div class="alerta-top">
+    <div class="alerta-icon">↑</div>
+    <div class="alerta-text">
+      Las <strong>Cuentas por Cobrar son mayoritariamente extracontables</strong>. Solo USD 8.482 están registradas formalmente. El grueso (USD 96.787) corresponde a obligaciones acordadas en minuta pero no contabilizadas.
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="kpi card-blue">
+      <div class="kpi-top" style="background:var(--blue)"></div>
+      <div class="kpi-label">CXC Contable (2024)</div>
+      <div class="kpi-val" style="color:var(--blue)">USD 8.482</div>
+      <div class="kpi-sub">$8,2MM CLP · En balance</div>
+      <div class="kpi-badge badge-blue">Registrado formalmente</div>
+    </div>
+    <div class="kpi card-yellow">
+      <div class="kpi-top" style="background:var(--yellow)"></div>
+      <div class="kpi-label">CXC Extracontable (hasta Feb-2024)</div>
+      <div class="kpi-val val-y">USD 96.787</div>
+      <div class="kpi-sub">$87,1MM CLP · No en balance</div>
+      <div class="kpi-badge badge-yellow">Pendiente facturación y pago</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top" style="background:var(--muted)"></div>
+      <div class="kpi-label">Total CXC Consolidado</div>
+      <div class="kpi-val val-w">USD 105.268</div>
+      <div class="kpi-sub">$95,3MM CLP total</div>
+      <div class="kpi-badge badge-red">Solo 8% en contabilidad</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Detalle Cuentas por Cobrar a RCS Perú</div>
+      <table class="table">
+        <thead><tr><th>Concepto</th><th>USD</th><th>CLP</th><th>Tipo</th><th>Anexo</th></tr></thead>
+        <tbody>
+          <tr class="section"><td colspan="5">EXTRACONTABLES — Pendientes facturación y pago</td></tr>
+          <tr>
+            <td style="padding-left:14px">Integraciones a RCS Perú (hasta Feb-2024)</td>
+            <td class="val-y">83.662</td><td class="val-m">$75,3MM</td>
+            <td><span class="deuda-tipo tipo-extra">Extracontable</span></td><td class="val-m">A1</td>
+          </tr>
+          <tr>
+            <td style="padding-left:14px">Membresía Integrador RCS Perú 2018-2023</td>
+            <td class="val-y">13.125</td><td class="val-m">$11,8MM</td>
+            <td><span class="deuda-tipo tipo-extra">Extracontable</span></td><td class="val-m">A2</td>
+          </tr>
+          <tr class="subtotal"><td>Total Extracontable (hasta Feb-2024)</td><td class="val-y">96.787</td><td class="val-m">$87,1MM</td><td></td><td></td></tr>
+          <tr class="section"><td colspan="5">CONTABLES 2024 — En balance</td></tr>
+          <tr>
+            <td style="padding-left:14px">Integraciones a RCS Perú 2024 (extracontable)</td>
+            <td class="val-b" style="color:var(--blue)">4.507</td><td class="val-m">$4,1MM</td>
+            <td><span class="deuda-tipo tipo-extra">Extracontable</span></td><td class="val-m">A1</td>
+          </tr>
+          <tr>
+            <td style="padding-left:14px">Integraciones 2024 (facturado 2024)</td>
+            <td class="val-b" style="color:var(--blue)">300</td><td class="val-m">$0,3MM</td>
+            <td><span class="deuda-tipo tipo-conta">Contable</span></td><td class="val-m">C2</td>
+          </tr>
+          <tr>
+            <td style="padding-left:14px">Membresía RCS Perú 2024</td>
+            <td class="val-b" style="color:var(--blue)">3.675</td><td class="val-m">$3,3MM</td>
+            <td><span class="deuda-tipo tipo-extra">Extracontable</span></td><td class="val-m">A2</td>
+          </tr>
+          <tr class="subtotal"><td>Total Pasivos Largo Plazo (2024)</td><td style="color:var(--blue)">8.482</td><td class="val-m">$7,6MM</td><td></td><td></td></tr>
+          <tr class="total"><td>TOTAL CXC CONSOLIDADO</td><td class="val-y">105.268</td><td class="val-y">$94,7MM</td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Análisis de Recuperabilidad</div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:11px;font-weight:600">Registrado en contabilidad</span>
+          <span style="font-size:11px;color:var(--blue)">8,1%</span>
+        </div>
+        <div style="height:10px;background:var(--s3);border-radius:5px;overflow:hidden">
+          <div style="width:8.1%;height:100%;background:var(--blue);border-radius:5px"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:11px;font-weight:600">Extracontable (acuerdo de minuta)</span>
+          <span style="font-size:11px;color:var(--yellow)">91,9%</span>
+        </div>
+        <div style="height:10px;background:var(--s3);border-radius:5px;overflow:hidden">
+          <div style="width:91.9%;height:100%;background:var(--yellow);border-radius:5px"></div>
+        </div>
+      </div>
+      <div style="padding:12px;background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:8px;margin-top:8px">
+        <div style="font-size:9px;color:var(--yellow);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">Riesgo de Recuperación</div>
+        <div style="font-size:11px;color:var(--muted2);line-height:1.6">
+          El <strong style="color:var(--yellow)">91,9% de las CXC no están contabilizadas</strong>. Su recuperación depende exclusivamente de los acuerdos de minuta entre partes y de la voluntad de pago de RCS Perú. No existen garantías reales ni instrumentos legales de cobro formal reconocidos contablemente.
+        </div>
+      </div>
+      <div style="padding:12px;background:var(--s2);border:1px solid var(--border);border-radius:8px;margin-top:10px">
+        <div style="font-size:9px;color:var(--muted);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">Contexto</div>
+        <div style="font-size:11px;color:var(--muted2);line-height:1.6">
+          Actualmente <strong>RCS Perú tiene más deudas con RCS Chile que al revés</strong>. El neteo favorable a RCS Chile es de USD 96.787 extracontables. Sin embargo, este activo no puede servir para pagar las obligaciones formales de RCS Chile.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ CXP ════════ -->
+<div class="page" id="page-cxp">
+  <div class="alerta-top">
+    <div class="alerta-icon">▲</div>
+    <div class="alerta-text">
+      Las <strong>Cuentas por Pagar totalizan USD 417.903</strong> (~$376,1MM CLP). El <strong>97% son extracontables</strong>. La deuda más grande es con Faros Asesores por remuneraciones y servicios de gerencia general (2016-2023): <strong>USD 170.102</strong>.
+    </div>
+  </div>
+
+  <div class="grid-kpi">
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Total CXP a Faros</div>
+      <div class="kpi-val val-r">USD 244.698</div>
+      <div class="kpi-sub">$220,2MM CLP · 58,6% del total</div>
+      <div class="kpi-badge badge-yellow">Extracontable</div>
+    </div>
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Total CXP a RCS Perú</div>
+      <div class="kpi-val val-r">USD 173.205</div>
+      <div class="kpi-sub">$155,9MM CLP · 41,4% del total</div>
+      <div class="kpi-badge badge-yellow">Extracontable</div>
+    </div>
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Total CXP Consolidado</div>
+      <div class="kpi-val val-r">USD 417.903</div>
+      <div class="kpi-sub">$376,1MM CLP · Total</div>
+      <div class="kpi-badge badge-red">Crítico</div>
+    </div>
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--yellow)"></div>
+      <div class="kpi-label">CXP Corto Plazo (2024)</div>
+      <div class="kpi-val val-y">USD 22.212</div>
+      <div class="kpi-sub">$20,0MM CLP · Vencido 2024</div>
+      <div class="kpi-badge badge-yellow">Pendiente pago</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Detalle Cuentas por Pagar — RCS Perú</div>
+      <table class="table">
+        <thead><tr><th>Concepto</th><th>USD</th><th>CLP</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr class="section"><td colspan="4">EXTRACONTABLES (hasta Feb-2024)</td></tr>
+          <tr><td style="padding-left:14px">Membresías RCS.CL → RCS.PE (2017-2023)</td><td class="val-r">122.452</td><td class="val-m">$110,2MM</td><td><span class="deuda-tipo tipo-extra">Extracontable</span></td></tr>
+          <tr><td style="padding-left:14px">Licencias RCS.CL → RCS.PE (2017-Mar 2024)</td><td class="val-r">50.752</td><td class="val-m">$45,7MM</td><td><span class="deuda-tipo tipo-extra">Extracontable</span></td></tr>
+          <tr class="subtotal"><td>Subtotal extracontables</td><td class="val-r">173.205</td><td class="val-m">$155,9MM</td><td></td></tr>
+          <tr class="section"><td colspan="4">CORTO PLAZO (2024)</td></tr>
+          <tr><td style="padding-left:14px">Licencias Mar 2024</td><td class="val-r">863</td><td class="val-m">$0,8MM</td><td><span class="deuda-tipo tipo-extra">Extracontable</span></td></tr>
+          <tr><td style="padding-left:14px">Licencias Abr-Dic 2024</td><td class="val-r">1.944</td><td class="val-m">$1,7MM</td><td><span class="deuda-tipo tipo-conta">Contable</span></td></tr>
+          <tr><td style="padding-left:14px">Membresías 2024</td><td class="val-r">19.405</td><td class="val-m">$17,5MM</td><td><span class="deuda-tipo tipo-extra">Extracontable</span></td></tr>
+          <tr class="total"><td>TOTAL CXP A RCS PERÚ</td><td class="val-r">195.417</td><td class="val-r">$176,0MM</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Detalle Cuentas por Pagar — Faros Asesores</div>
+      <table class="table">
+        <thead><tr><th>Concepto</th><th>USD</th><th>CLP</th><th>Anexo</th></tr></thead>
+        <tbody>
+          <tr class="section"><td colspan="4">REMUNERACIONES GERENCIA Y EQUIPOS</td></tr>
+          <tr><td style="padding-left:14px">Rem. Gerente General (2016-Jun 2023)</td><td class="val-r">170.102</td><td class="val-m">$153,1MM</td><td class="val-m">B3</td></tr>
+          <tr><td style="padding-left:14px">Rem. Equipo Comercial Faros 2022</td><td class="val-r">13.232</td><td class="val-m">$11,9MM</td><td class="val-m">B4</td></tr>
+          <tr><td style="padding-left:14px">Rem. Equipo A&F Faros 2022</td><td class="val-r">2.252</td><td class="val-m">$2,0MM</td><td class="val-m">B4</td></tr>
+          <tr><td style="padding-left:14px">Rem. Equipo MKT Faros 2022</td><td class="val-r">1.603</td><td class="val-m">$1,4MM</td><td class="val-m">B4</td></tr>
+          <tr><td style="padding-left:14px">Gasto Op. (2020-2022)</td><td class="val-r">21.064</td><td class="val-m">$19,0MM</td><td class="val-m">B4</td></tr>
+          <tr><td style="padding-left:14px">Rem. Equipo Comercial Faros 2023</td><td class="val-r">14.455</td><td class="val-m">$13,0MM</td><td class="val-m">B5</td></tr>
+          <tr><td style="padding-left:14px">Rem. Equipo A&F Faros 2023</td><td class="val-r">11.805</td><td class="val-m">$10,6MM</td><td class="val-m">B5</td></tr>
+          <tr><td style="padding-left:14px">Rem. Equipo MKT Faros 2023</td><td class="val-r">4.331</td><td class="val-m">$3,9MM</td><td class="val-m">B5</td></tr>
+          <tr><td style="padding-left:14px">Gasto Op. (Ene-Jun 2023)</td><td class="val-r">5.854</td><td class="val-m">$5,3MM</td><td class="val-m">B5</td></tr>
+          <tr class="subtotal"><td>Subtotal Faros (extracontable)</td><td class="val-r">244.698</td><td class="val-m">$220,2MM</td><td></td></tr>
+          <tr class="section"><td colspan="4">LARGO PLAZO (Préstamos)</td></tr>
+          <tr><td style="padding-left:14px">Cta. Cte. Faros (préstamos a RCS CL)</td><td class="val-r">17.393</td><td class="val-m">$15,7MM</td><td class="val-m">C1</td></tr>
+          <tr class="total"><td>TOTAL CXP A FAROS</td><td class="val-r">262.091</td><td class="val-r">$235,9MM</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ RECONCILIACIÓN ════════ -->
+<div class="page" id="page-reconciliacion">
+  <div class="alerta-top">
+    <div class="alerta-icon">≠</div>
+    <div class="alerta-text">
+      La <strong>brecha entre lo contable y la realidad económica es de USD 276.388</strong>. El balance formal muestra una situación que oculta la carga extracontable real. Los socios necesitan ver ambas cifras para tomar decisiones fundadas.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Puente Contable → Posición Real (Reconciliación)</div>
+    <table class="table">
+      <thead><tr><th>Línea</th><th>Valor Contable</th><th>Ajuste Extracontable</th><th>Posición Real</th><th>Impacto</th></tr></thead>
+      <tbody>
+        <tr class="section"><td colspan="5">ACTIVOS</td></tr>
+        <tr><td style="padding-left:14px">Disponible (Caja + FFMM)</td>
+          <td class="val-g">USD 86.163</td><td class="val-m">—</td><td class="val-g">USD 86.163</td>
+          <td><span class="sem sem-green"></span></td></tr>
+        <tr><td style="padding-left:14px">Clientes (30 días)</td>
+          <td class="val-g">USD 22.111</td><td class="val-m">—</td><td class="val-y">USD 22.111</td>
+          <td><span class="sem sem-yellow"></span></td></tr>
+        <tr><td style="padding-left:14px">CXC a RCS Perú (extracontable)</td>
+          <td class="val-m">USD 8.482</td><td class="val-y">+ USD 96.787</td><td class="val-y">USD 105.268</td>
+          <td><span class="deuda-tipo tipo-extra">Ajuste</span></td></tr>
+        <tr class="subtotal"><td>TOTAL ACTIVOS</td>
+          <td>USD 116.756</td><td class="val-y">+ USD 96.787</td><td class="val-y">USD 213.541</td><td></td></tr>
+        <tr class="section"><td colspan="5">PASIVOS</td></tr>
+        <tr><td style="padding-left:14px">Pasivos contables (balance formal)</td>
+          <td class="val-r">USD 45.290</td><td class="val-m">—</td><td class="val-r">USD 45.290</td>
+          <td><span class="sem sem-red"></span></td></tr>
+        <tr><td style="padding-left:14px">Deuda extracontable a Faros</td>
+          <td class="val-m">—</td><td class="val-r">+ USD 244.698</td><td class="val-r">USD 244.698</td>
+          <td><span class="deuda-tipo tipo-extra">No en balance</span></td></tr>
+        <tr><td style="padding-left:14px">Deuda extracontable a RCS Perú</td>
+          <td class="val-m">—</td><td class="val-r">+ USD 76.418</td><td class="val-r">USD 76.418</td>
+          <td><span class="deuda-tipo tipo-extra">No en balance</span></td></tr>
+        <tr><td style="padding-left:14px">Pasivos operacionales 2025</td>
+          <td class="val-r">USD 50.642</td><td class="val-m">—</td><td class="val-r">USD 50.642</td>
+          <td><span class="sem sem-red"></span></td></tr>
+        <tr class="subtotal"><td>TOTAL PASIVOS</td>
+          <td class="val-r">USD 95.932</td><td class="val-r">+ USD 321.116</td><td class="val-r">USD 417.049</td><td></td></tr>
+        <tr class="total"><td>POSICIÓN NETA (Activo – Pasivo)</td>
+          <td class="val-g">+ USD 20.824</td><td class="val-r">– USD 224.329</td><td class="val-r">– USD 203.508</td><td><span class="sem sem-red"></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-red">
+      <div class="card-title">Balance Contable Formal (2023)</div>
+      <table class="table">
+        <thead><tr><th>Concepto</th><th>USD</th><th>CLP</th></tr></thead>
+        <tbody>
+          <tr class="section"><td colspan="3">ACTIVOS</td></tr>
+          <tr><td style="padding-left:14px">Activo Circulante</td><td class="val-g">113.413</td><td class="val-m">$102,1MM</td></tr>
+          <tr><td style="padding-left:14px">Activos Fijos</td><td class="val-g">1.512</td><td class="val-m">$1,4MM</td></tr>
+          <tr class="subtotal"><td>Total Activos</td><td class="val-g">114.926</td><td class="val-m">$103,4MM</td></tr>
+          <tr class="section"><td colspan="3">PASIVOS</td></tr>
+          <tr><td style="padding-left:14px">Pasivos Circulantes</td><td class="val-r">12.891</td><td class="val-m">$11,6MM</td></tr>
+          <tr><td style="padding-left:14px">Cta. Cte. Faros</td><td class="val-r">19.567</td><td class="val-m">$17,6MM</td></tr>
+          <tr><td style="padding-left:14px">Cta. Cte. RCS Perú</td><td class="val-r">25.521</td><td class="val-m">$23,0MM</td></tr>
+          <tr class="subtotal"><td>Total Pasivos</td><td class="val-r">57.979</td><td class="val-m">$52,2MM</td></tr>
+          <tr class="section"><td colspan="3">PATRIMONIO</td></tr>
+          <tr><td style="padding-left:14px">Capital + Reservas</td><td class="val-g">61.685</td><td class="val-m">$55,5MM</td></tr>
+          <tr><td style="padding-left:14px">Pérdida del ejercicio</td><td class="val-r">(4.738)</td><td class="val-r">($4,3MM)</td></tr>
+          <tr class="subtotal"><td>Total Patrimonio</td><td>56.947</td><td class="val-m">$51,3MM</td></tr>
+          <tr class="total"><td>Total Pasivo + Patrimonio</td><td>114.926</td><td class="val-m">$103,4MM</td></tr>
+        </tbody>
+      </table>
+      <div style="padding:10px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:6px;margin-top:12px;font-size:10px;color:var(--muted2)">
+        El balance formal muestra una empresa <strong style="color:var(--blue)">aparentemente solvente</strong>. Esta visión es incompleta y puede inducir a error en la toma de decisiones.
+      </div>
+    </div>
+    <div class="card card-red">
+      <div class="card-title">Posición Real Ajustada (incluyendo extracontables)</div>
+      <table class="table">
+        <thead><tr><th>Concepto</th><th>USD</th><th>CLP</th></tr></thead>
+        <tbody>
+          <tr class="section"><td colspan="3">ACTIVOS REALES</td></tr>
+          <tr><td style="padding-left:14px">Disponible (Caja + FFMM)</td><td class="val-g">86.163</td><td class="val-m">$83,3MM</td></tr>
+          <tr><td style="padding-left:14px">CXC Clientes</td><td class="val-y">22.111</td><td class="val-m">$21,4MM</td></tr>
+          <tr><td style="padding-left:14px">CXC a RCS Perú (extracontable)</td><td class="val-y">105.268</td><td class="val-m">$94,7MM</td></tr>
+          <tr class="subtotal"><td>Total Activos Reales</td><td class="val-y">213.541</td><td class="val-m">$199,4MM</td></tr>
+          <tr class="section"><td colspan="3">PASIVOS REALES</td></tr>
+          <tr><td style="padding-left:14px">Deuda a Faros (extracontable)</td><td class="val-r">244.698</td><td class="val-m">$220,2MM</td></tr>
+          <tr><td style="padding-left:14px">Deuda a RCS Perú (extracontable)</td><td class="val-r">76.418</td><td class="val-m">$68,7MM</td></tr>
+          <tr><td style="padding-left:14px">Pasivos Corto Plazo + 2025</td><td class="val-r">95.932</td><td class="val-m">$92,7MM</td></tr>
+          <tr class="subtotal"><td>Total Pasivos Reales</td><td class="val-r">417.049</td><td class="val-r">$381,6MM</td></tr>
+          <tr class="total"><td>DÉFICIT PATRIMONIAL REAL</td><td class="val-r">– 203.508</td><td class="val-r">– $182,2MM</td></tr>
+        </tbody>
+      </table>
+      <div style="padding:10px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:6px;margin-top:12px;font-size:10px;color:var(--muted2)">
+        La <strong style="color:var(--red)">brecha entre visión contable y real es de USD 224.329</strong>. Esta diferencia representa el impacto de las obligaciones extracontables que no aparecen en los estados financieros formales.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ RESULTADOS ════════ -->
+<div class="page" id="page-resultados">
+  <div class="alerta-top">
+    <div class="alerta-icon">↓</div>
+    <div class="alerta-text">
+      RCS Chile registra <strong>pérdidas en 5 de los últimos 8 años</strong>. La empresa es estructuralmente deficitaria: los ingresos no alcanzan a cubrir el costo real de operación cuando se incluyen los servicios prestados por Faros y RCS Perú.
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">EERR 2024 — Estado de Resultados</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
+        <div class="eerr-bar-row">
+          <div class="eerr-label">Ingresos</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:100%;background:#16a34a"><span class="eerr-bar-label" style="color:var(--green)">$120,4MM</span></div></div>
+          </div>
+          <div class="eerr-val val-g">USD 124.506</div>
+          <div class="eerr-pct">100%</div>
+        </div>
+        <div class="eerr-bar-row">
+          <div class="eerr-label">Costo de Ventas (RRHH)</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:78.9%;background:#dc2626"><span class="eerr-bar-label" style="color:var(--red)">$95,0MM</span></div></div>
+          </div>
+          <div class="eerr-val val-r">(98.216)</div>
+          <div class="eerr-pct val-r">78,9%</div>
+        </div>
+        <div class="eerr-bar-row" style="border-top:1px solid var(--border);padding-top:8px">
+          <div class="eerr-label" style="font-weight:600">Margen Operacional</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:21.1%;background:#bbf7d0"><span class="eerr-bar-label" style="color:var(--green)">$25,4MM</span></div></div>
+          </div>
+          <div class="eerr-val val-g">26.290</div>
+          <div class="eerr-pct val-g">21,1%</div>
+        </div>
+        <div class="eerr-bar-row">
+          <div class="eerr-label">Gastos Adm. y Finanzas</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:24.2%;background:#dc2626"><span class="eerr-bar-label" style="color:var(--red)">$29,2MM</span></div></div>
+          </div>
+          <div class="eerr-val val-r">(30.169)</div>
+          <div class="eerr-pct val-r">24,2%</div>
+        </div>
+        <div class="eerr-bar-row" style="border-top:1px solid var(--border);padding-top:8px">
+          <div class="eerr-label" style="font-weight:600">EBITDA</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:3.1%;background:#b91c1c"><span class="eerr-bar-label" style="color:var(--red)">–</span></div></div>
+          </div>
+          <div class="eerr-val val-r">(3.879)</div>
+          <div class="eerr-pct val-r">–3,1%</div>
+        </div>
+        <div class="eerr-bar-row">
+          <div class="eerr-label">Ingresos Financieros (FFMM)</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:3.0%;background:#bbf7d0"></div></div>
+          </div>
+          <div class="eerr-val val-g">3.777</div>
+          <div class="eerr-pct val-g">3,0%</div>
+        </div>
+        <div class="eerr-bar-row">
+          <div class="eerr-label">Gastos Financieros</div>
+          <div class="eerr-bar-wrap">
+            <div class="eerr-bar-bg"><div class="eerr-bar-fill" style="width:0.4%;background:#dc2626"></div></div>
+          </div>
+          <div class="eerr-val val-r">(405)</div>
+          <div class="eerr-pct val-r">–0,3%</div>
+        </div>
+        <div class="eerr-bar-row" style="border-top:2px solid var(--red);padding-top:10px">
+          <div class="eerr-label" style="font-weight:700;font-family:'Syne',sans-serif">PÉRDIDA DEL EJERCICIO</div>
+          <div class="eerr-bar-wrap"></div>
+          <div class="eerr-val val-r" style="font-family:'Syne',sans-serif;font-size:15px">(532)</div>
+          <div class="eerr-pct val-r">–0,4%</div>
+        </div>
+      </div>
+      <div style="padding:10px;background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:6px;font-size:10px;color:var(--muted2)">
+        <strong style="color:var(--yellow)">Nota:</strong> Los ingresos financieros de los FFMM ($3.653K CLP) amortiguan la pérdida operacional. Sin estos, la pérdida sería de USD ~4.411. La empresa sobrevive gracias a su liquidez, no a su operación.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Evolución de Resultados por Año</div>
+      <div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">
+          <span>Año</span><span>Resultado</span>
+        </div>
+        <!-- Evolution bars -->
+        <div class="evol-row">
+          <div class="evol-year">2015</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:1%;background:var(--green)"></div></div>
+          <div class="evol-val val-g">+ $314K</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2016</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:100%;background:var(--red)"></div></div>
+          <div class="evol-val val-r">– $61,3MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2017</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:20%;background:var(--red)"></div></div>
+          <div class="evol-val val-r">– $12,6MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2018</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:10%;background:var(--red)"></div></div>
+          <div class="evol-val val-r">– $6,2MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2019</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:15%;background:var(--green)"></div></div>
+          <div class="evol-val val-g">+ $9,6MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2020</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:14%;background:var(--green)"></div></div>
+          <div class="evol-val val-g">+ $8,6MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2021</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:72%;background:var(--green)"></div></div>
+          <div class="evol-val val-g">+ $44,4MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2022</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:11%;background:var(--red)"></div></div>
+          <div class="evol-val val-r">– $6,9MM</div>
+        </div>
+        <div class="evol-row">
+          <div class="evol-year">2023(h)</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:18%;background:var(--green)"></div></div>
+          <div class="evol-val val-g">+ $11,1MM</div>
+        </div>
+        <div class="evol-row" style="border-top:1px solid var(--border);padding-top:8px">
+          <div class="evol-year" style="color:var(--text);font-weight:700">2024</div>
+          <div class="evol-bar-bg"><div class="evol-bar-fill" style="width:1%;background:var(--red)"></div></div>
+          <div class="evol-val val-r">– $515K</div>
+        </div>
+      </div>
+      <div style="padding:10px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:6px;font-size:10px;color:var(--muted2);margin-top:8px">
+        <strong style="color:var(--red)">Patrón estructural:</strong> 5 años con pérdidas en los últimos 8. Los años positivos (2019-2021) no generaron reservas suficientes para enfrentar la carga acumulada extracontable.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ RIESGO ════════ -->
+<div class="page" id="page-riesgo">
+  <div class="grid-3">
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Ratio Deuda/Activo Real</div>
+      <div class="kpi-val val-r">195%</div>
+      <div class="kpi-sub">Pasivos superan activos en 2x</div>
+      <div class="kpi-badge badge-red">Crítico</div>
+    </div>
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--yellow)"></div>
+      <div class="kpi-label">Brecha Contable vs Real</div>
+      <div class="kpi-val val-y">USD 224.329</div>
+      <div class="kpi-sub">No visible en balance formal</div>
+      <div class="kpi-badge badge-yellow">Alta exposición</div>
+    </div>
+    <div class="kpi card-red">
+      <div class="kpi-top" style="background:var(--red)"></div>
+      <div class="kpi-label">Concentración de Deuda</div>
+      <div class="kpi-val val-r">76,2%</div>
+      <div class="kpi-sub">Un solo acreedor (Faros)</div>
+      <div class="kpi-badge badge-red">Alta concentración</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Mapa de Riesgos</div>
+      <div class="risk-meter">
+        <div class="risk-item">
+          <div class="risk-label">Solvencia patrimonial real</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:95%;background:var(--red)"></div></div>
+          <div class="risk-level val-r">CRÍTICO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Exposición extracontable</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:97%;background:var(--red)"></div></div>
+          <div class="risk-level val-r">CRÍTICO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Liquidez inmediata (caja)</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:45%;background:var(--yellow)"></div></div>
+          <div class="risk-level val-y">MEDIO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Concentración de deuda (Faros)</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:85%;background:var(--red)"></div></div>
+          <div class="risk-level val-r">ALTO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Viabilidad operacional 2025</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:80%;background:var(--red)"></div></div>
+          <div class="risk-level val-r">ALTO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Recuperabilidad CXC Extracontable</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:60%;background:var(--yellow)"></div></div>
+          <div class="risk-level val-y">MEDIO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Riesgo legal/laboral (indemnizaciones)</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:70%;background:var(--yellow)"></div></div>
+          <div class="risk-level val-y">ALTO</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-label">Continuidad operativa sin inyección</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:90%;background:var(--red)"></div></div>
+          <div class="risk-level val-r">CRÍTICO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Factores Críticos de Riesgo</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="padding:12px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px">
+          <div style="font-size:9px;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Riesgo 1 — Insolvencia Patrimonial Real</div>
+          <div style="font-size:11px;color:var(--muted2);line-height:1.5">La deuda real supera los activos en un <strong style="color:var(--red)">195%</strong>. Si todas las obligaciones extracontables se materializaran formalmente, la empresa no podría solventarlas con los activos actuales.</div>
+        </div>
+        <div style="padding:12px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px">
+          <div style="font-size:9px;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Riesgo 2 — Liquidez Comprometida</div>
+          <div style="font-size:11px;color:var(--muted2);line-height:1.5">El disponible de <strong style="color:var(--yellow)">USD 86.163</strong> proviene principalmente de no haber pagado deudas acumuladas. Sólo cubre el <strong style="color:var(--red)">23,2%</strong> de los pasivos reales.</div>
+        </div>
+        <div style="padding:12px;background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:8px">
+          <div style="font-size:9px;color:var(--yellow);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Riesgo 3 — Obligaciones Laborales al Cierre</div>
+          <div style="font-size:11px;color:var(--muted2);line-height:1.5">Un cierre en 2025 genera indemnizaciones de <strong style="color:var(--yellow)">~$36,4MM CLP</strong> (sustitutiva + legal + vacaciones). Este pasivo no está provisionado y debe incluirse en cualquier proyección de cierre.</div>
+        </div>
+        <div style="padding:12px;background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:8px">
+          <div style="font-size:9px;color:var(--yellow);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Riesgo 4 — Ausencia de Garantías Formales</div>
+          <div style="font-size:11px;color:var(--muted2);line-height:1.5">La recuperación de las CXC extracontables (USD 96.787) depende de acuerdos de minuta sin respaldo legal formal. No existen pagarés, boletas de garantía ni instrumentos ejecutivos de cobro.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ DECISIÓN ESTRATÉGICA ════════ -->
+<div class="page" id="page-decision">
+  <div class="alerta-top">
+    <div class="alerta-icon">→</div>
+    <div class="alerta-text">
+      La administración ha identificado <strong>tres escenarios posibles</strong>. Cada uno tiene implicancias financieras, operacionales y legales distintas. Esta sección resume los factores clave para facilitar la decisión de los socios.
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="decision-box cerrar">
+      <div class="decision-title" style="color:var(--red)">Escenario A — Cierre</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Liquidación ordenada al 31-12-2025</div>
+      <div class="decision-pros">
+        <div class="decision-item" style="color:var(--muted2)">Pone fin al acumulo de pérdidas operativas</div>
+        <div class="decision-item" style="color:var(--muted2)">Evita generar más deuda extracontable</div>
+        <div class="decision-item" style="color:var(--muted2)">Permite distribuir activos disponibles (USD 49.354 post pagos)</div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:var(--red-bg);border-radius:6px">
+        <div style="font-size:9px;color:var(--red);font-weight:700;margin-bottom:6px">COSTOS DEL CIERRE</div>
+        <div style="font-size:11px;color:var(--muted2)">Indemnizaciones: <strong style="color:var(--red)">~USD 37.614</strong></div>
+        <div style="font-size:11px;color:var(--muted2)">Pasivos 2025: <strong style="color:var(--red)">USD 50.642</strong></div>
+        <div style="font-size:11px;color:var(--muted2)">Total compromisos cierre: <strong style="color:var(--red)">~USD 88.256</strong></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">La deuda extracontable histórica (USD 321.117) queda pendiente de negociación entre socios</div>
+      </div>
+    </div>
+
+    <div class="decision-box traspasar">
+      <div class="decision-title" style="color:var(--yellow)">Escenario B — Traspaso a Socios Perú</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Administración pasa a Retail Custom Solutions S.A.C.</div>
+      <div class="decision-pros">
+        <div class="decision-item" style="color:var(--muted2)">Mantiene la operación y potencial generación de caja</div>
+        <div class="decision-item" style="color:var(--muted2)">Permite renegociar la deuda extracontable desde adentro</div>
+        <div class="decision-item" style="color:var(--muted2)">Socios peruanos asumen el riesgo operacional</div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:var(--yellow-bg);border-radius:6px">
+        <div style="font-size:9px;color:var(--yellow);font-weight:700;margin-bottom:6px">CONDICIONES MÍNIMAS</div>
+        <div style="font-size:11px;color:var(--muted2)">Acuerdo escrito sobre deuda extracontable histórica</div>
+        <div style="font-size:11px;color:var(--muted2)">Definición del tratamiento de pasivos Faros (USD 244.698)</div>
+        <div style="font-size:11px;color:var(--muted2)">Plan de sustentabilidad económica aprobado</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Sin estos acuerdos, el traspaso solo traslada el problema sin resolverlo</div>
+      </div>
+    </div>
+
+    <div class="decision-box continuar">
+      <div class="decision-title" style="color:var(--muted2)">Escenario C — Continuar con cambios</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Restructuración operacional + nuevos ingresos</div>
+      <div class="decision-pros">
+        <div class="decision-item" style="color:var(--muted2)">Requiere ingresos nuevos para cubrir costo real</div>
+        <div class="decision-item" style="color:var(--muted2)">Necesita inyección de capital o reducción de costos ~30%</div>
+        <div class="decision-item" style="color:var(--muted2)">Permite mantener cartera de clientes activa</div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:var(--green-bg);border-radius:6px">
+        <div style="font-size:9px;color:var(--muted2);font-weight:700;margin-bottom:6px">BRECHA A CUBRIR</div>
+        <div style="font-size:11px;color:var(--muted2)">EBITDA negativo 2024: <strong style="color:var(--yellow)">USD –3.879</strong> anual</div>
+        <div style="font-size:11px;color:var(--muted2)">Deuda histórica pendiente: <strong style="color:var(--red)">USD 321.117</strong></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">La viabilidad de este escenario requiere un plan concreto y compromisos formales de los socios</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSIÓN FINAL -->
+  <div class="conclusion">
+    <div class="conclusion-title">▸ Conclusión Financiera Ejecutiva</div>
+    <div class="conclusion-grid">
+      <div class="conclusion-item critical">
+        <div class="conclusion-item-title red">Viabilidad de la empresa</div>
+        <div class="conclusion-item-text">
+          <strong>RCS Chile no es viable bajo el modelo actual.</strong> Presenta EBITDA negativo, pérdidas recurrentes y pasivos reales que superan los activos en 2x. La liquidez disponible proviene de no haber pagado deudas acumuladas, no de generación operativa.
+        </div>
+      </div>
+      <div class="conclusion-item critical">
+        <div class="conclusion-item-title red">Posición financiera real</div>
+        <div class="conclusion-item-text">
+          <strong>La situación es crítica.</strong> El déficit patrimonial real asciende a <strong>USD 337.230</strong> (~$326MM CLP). La deuda extracontable acumulada de USD 321.117 no aparece en el balance formal y representa el principal riesgo no reconocido contablemente.
+        </div>
+      </div>
+      <div class="conclusion-item warning">
+        <div class="conclusion-item-title yellow">Principales riesgos</div>
+        <div class="conclusion-item-text">
+          (1) Insolvencia patrimonial real al reconocer extracontables.<br>
+          (2) Liquidez comprometida: USD 86.163 cubre solo el 23% del pasivo real.<br>
+          (3) Obligaciones laborales no provisionadas (~USD 37.614).<br>
+          (4) Ausencia de garantías formales sobre CXC extracontables.
+        </div>
+      </div>
+      <div class="conclusion-item warning">
+        <div class="conclusion-item-title blue">Recomendación estratégica</div>
+        <div class="conclusion-item-text">
+          <strong>Prioridad inmediata:</strong> Decidir entre cierre ordenado o traspaso con condiciones formales. Cualquier opción requiere <strong>acuerdo escrito sobre el tratamiento de la deuda extracontable histórica</strong> (USD 321.117) y un plan de pago realista antes de tomar acción.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  RCS Chile · Dashboard Financiero Crítico · Memoria de Cálculo CXC-CXP al 27/05/2025 · TC: $967,15 CLP/USD (Banco Central, 16/04/2025) · Confidencial — Solo para uso de socios
+</div>
+
+<script>
+function setTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab[onclick="setTab('${id}')"]`).classList.add('active');
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>
